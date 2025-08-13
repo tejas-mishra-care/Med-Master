@@ -1,0 +1,45 @@
+name: Daily Quiz Generation
+
+on:
+  schedule:
+    # Runs at 02:00 IST (UTC +5:30)
+    - cron: '30 20 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Daily Quiz via API
+        run: |
+          # Option 1: Call the API route directly
+          # Ensure your Next.js app is deployed and accessible
+          # Consider using a tool like curl or a simple Node.js script to make the POST request
+          # Example using curl (replace with your deployed app URL):
+          # curl -X POST \
+          #   -H "Authorization: Bearer ${{ secrets.CRON_SECRET_TOKEN }}" \
+          #   ${{ secrets.NEXT_PUBLIC_APP_URL }}/api/cron/generate_daily_quiz
+
+          # Option 2: Run the script directly (if script handles necessary environment setup)
+          # Make sure the script can access necessary environment variables
+          pnpm run generate-daily-quiz
+
+        env:
+          # Add necessary environment variables the script/API route needs
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          # Add other necessary secrets here
+          # CRON_SECRET_TOKEN: ${{ secrets.CRON_SECRET_TOKEN }} # If using API key for cron endpoint

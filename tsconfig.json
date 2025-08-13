@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    // Specifies the target JavaScript version for compiled code.
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+    // Enables a broad range of strict type checking behavior, which helps catch errors early.
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -18,10 +20,13 @@
         "name": "next"
       }
     ],
+    // Sets up path aliases for easier imports.
     "paths": {
       "@/*": ["./src/*"]
     }
   },
+  // Specifies the files to include in the compilation.
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  // Specifies the files and folders to exclude from the compilation.
   "exclude": ["node_modules"]
 }

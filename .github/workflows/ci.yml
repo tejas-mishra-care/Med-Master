@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+        env:
+          # Add necessary environment variables for the build process
+          # Vercel handles most envs on deployment, but some might be needed for build
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          NEXT_PUBLIC_DISCLAIMER_TEXT: ${{ secrets.NEXT_PUBLIC_DISCLAIMER_TEXT }}
+
+
+      - name: Run tests
+        run: pnpm test
+
+      # Note: Vercel is configured to automatically deploy
+      # commits to the main branch and create preview deployments
+      # for pull requests from the develop branch.
+      # Ensure your Vercel project is linked to this GitHub repository.
+      # Environment variables for Vercel deployment should be configured
+      # directly in the Vercel project settings, including the
+      # SUPABASE_SERVICE_ROLE_KEY which should NEVER be exposed in logs
+      # or client-side code.

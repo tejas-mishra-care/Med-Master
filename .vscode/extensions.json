@@ -1,0 +1,10 @@
+{
+  // List of VS Code extensions recommended for this project.
+  "recommendations": [
+    // Windsurf agent for interacting with the project using natural language.
+    "genkit.windsurf",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss" // Provides IntelliSense for Tailwind CSS.
+  ]
+}
