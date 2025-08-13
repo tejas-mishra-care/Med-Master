@@ -26,7 +26,7 @@ export default function DashboardLayout({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="#">
+                    <Link href="/dashboard/quiz">
                       <Newspaper />
                       Daily Quiz
                     </Link>
