@@ -1,9 +1,8 @@
 'use client';
 
-import { Stethoscope, Menu } from 'lucide-react';
+import { Stethoscope } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -23,7 +22,8 @@ const navLinks = [
   { href: '#', label: 'Pricing' },
 ];
 
-// Set this to true to see the logged-in state
+// TODO: Replace with actual authentication state from auth provider
+// Set this to true to see the logged-in state during development
 const IS_LOGGED_IN = true;
 
 export default function Header() {

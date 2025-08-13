@@ -126,7 +126,7 @@ export default function DailyQuiz() {
           </Button>
         </CardFooter>
       </Card>
-    )
+    );
   }
 
   if (!quizData || !currentQuestion) {
