@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, User, BrainCircuit } from 'lucide-react';
+import { Bot, User, BrainCircuit, Send } from 'lucide-react';
 import { getMedicalExplanation, GetMedicalExplanationInput, GetMedicalExplanationOutput } from '@/ai/flows/medical-assistant';
 import { ScrollArea } from '../ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
@@ -63,6 +63,18 @@ export default function MedicalAssistant() {
       <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
         <ScrollArea className="flex-1 pr-4">
           <div className="space-y-4">
+            {messages.length === 0 && !isLoading && (
+              <div className="text-center p-8">
+                <h2 className="text-2xl font-bold mb-2">Your AI Medical Assistant</h2>
+                <p className="text-muted-foreground mb-6">Ask me anything about medical conditions, treatments, or drugs.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button variant="outline" onClick={() => setInput('What are the symptoms of diabetes?')}>What are the symptoms of diabetes?</Button>
+                  <Button variant="outline" onClick={() => setInput('Explain the side effects of metformin.')}>Explain the side effects of metformin.</Button>
+                  <Button variant="outline" onClick={() => setInput('What is the treatment for a common cold?')}>What is the treatment for a common cold?</Button>
+                  <Button variant="outline" onClick={() => setInput('Summarize the latest research on Alzheimer\'s.')}>Summarize the latest research on Alzheimer's.</Button>
+                </div>
+              </div>
+            )}
             {messages.map((message, index) => (
               <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
                 {message.role === 'assistant' && <Bot className="w-8 h-8 text-primary flex-shrink-0" />}
@@ -90,12 +102,14 @@ export default function MedicalAssistant() {
               </div>
             ))}
              {isLoading && (
-              <div className="flex items-start gap-4">
-                <Bot className="w-8 h-8 text-primary" />
-                <div className="rounded-lg p-3 bg-muted">
-                  <p className="text-sm">Thinking...</p>
+                <div className="flex items-start gap-4">
+                  <Bot className="w-8 h-8 text-primary flex-shrink-0" />
+                  <div className="rounded-lg p-3 bg-muted flex items-center space-x-2">
+                    <span className="h-2 w-2 bg-primary rounded-full animate-pulse [animation-delay:-0.3s]"></span>
+                    <span className="h-2 w-2 bg-primary rounded-full animate-pulse [animation-delay:-0.15s]"></span>
+                    <span className="h-2 w-2 bg-primary rounded-full animate-pulse"></span>
+                  </div>
                 </div>
-              </div>
             )}
             {error && (
                <Alert variant="destructive">
@@ -113,8 +127,9 @@ export default function MedicalAssistant() {
             className="flex-1"
             disabled={isLoading}
           />
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} className="gap-2">
             Send
+            <Send className="w-4 h-4" />
           </Button>
         </form>
       </CardContent>

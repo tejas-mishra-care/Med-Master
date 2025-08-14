@@ -1,6 +1,6 @@
 'use client';
 
-import { Stethoscope } from 'lucide-react';
+import { Stethoscope, LayoutDashboard, User, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -31,7 +31,7 @@ export default function Header() {
   const { open, toggleSidebar } = useSidebar();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
            <SidebarTrigger className="md:hidden" />
@@ -63,19 +63,34 @@ export default function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard" className="flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/logout" className="flex items-center gap-2">
+                    <LogOut className="w-4 h-4" />
+                    Log out
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className='hidden md:flex items-center gap-2'>
               <Button variant="ghost" asChild>
-                <Link href="#">Log In</Link>
+                <Link href="/login">Log In</Link>
               </Button>
               <Button asChild>
-                <Link href="#">Sign Up</Link>
+                <Link href="/signup">Sign Up</Link>
               </Button>
             </div>
           )}

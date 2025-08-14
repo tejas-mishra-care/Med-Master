@@ -1,5 +1,6 @@
 // This component displays a notice board for a batch, showing posts from members.
 import React from 'react';
+import Image from 'next/image';
 
 interface Post {
   // Unique identifier for the post
@@ -39,12 +40,16 @@ const BatchNoticeBoard: React.FC<BatchNoticeBoardProps> = ({ posts }) => {
           }`}
         >
           <div className="flex items-center mb-2">
-            <img
+            <Image
               // Display author's avatar, with a placeholder if none is available.
               src={post.author.avatarUrl || '/placeholder-avatar.png'}
-              alt={post.author.name}
-              className="w-8 h-8 rounded-full mr-2"
+              alt={`${post.author.name}'s avatar`}
+              width={32}
+              height={32}
+              className="rounded-full mr-2"
+              unoptimized
             />
+
             <div className="font-semibold text-gray-900 dark:text-gray-100">{post.author.name}</div>
             {post.isPinned && (
               <span className="ml-2 px-2 py-0.5 bg-HIGHLIGHT text-white text-xs font-bold rounded-full">

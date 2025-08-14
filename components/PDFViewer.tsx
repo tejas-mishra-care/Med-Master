@@ -1,5 +1,5 @@
 // components/PDFViewer.tsx
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 /*
 This component is the core PDF viewer for MedMaster.
@@ -11,22 +11,31 @@ Key Features:
 - Allows users to add annotations (highlights, drawings) using Fabric.js.
 - Provides a toolbar for selecting annotation tools and colors.
 */
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { debounce } from 'lodash'; // Assuming lodash is installed
-import { useMediaQuery } from 'react-responsive'; // Assuming react-responsive is installed
 
 // Set up pdf.js worker source
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+// Define a type for the annotation data structure
+interface Annotation {
+  pdf_id: string;
+  user_id: string;
+  page: number;
+  rect: fabric.IRectOptions;
+  type: string;
+  color: string | fabric.Gradient | fabric.Pattern;
+}
 
 interface PDFViewerProps {
   pdfUrl: string;
   pdfId: string;
   userId: string;
-  onAnnotationSave: (annotationData: any) => void; // Callback for saving annotations
+  onAnnotationSave: (annotationData: Annotation[]) => void; // Callback for saving annotations
   onAddToNotes: (excerpt: string) => void; // Callback to add excerpt to notes
-  initialAnnotations?: any[]; // Initial annotations to load
+  initialAnnotations?: Annotation[]; // Initial annotations to load
   // Add a prop for a dictionary lookup function
   onWordLookup?: (word: string, position: { x: number; y: number }) => void;
   // Add a prop to indicate if reduced motion is preferred (or use a hook)
@@ -35,6 +44,9 @@ interface PDFViewerProps {
   isReadOnly?: boolean;
 
 }
+
+// Extend fabric.Object with our custom metadata we attach (userId, page)
+type FabricAnno = fabric.Object & { userId?: string; page?: number };
 
 const PDFViewer: React.FC<PDFViewerProps> = ({
   pdfUrl,
@@ -61,16 +73,6 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
   const [currentTool, setCurrentTool] = useState<'pen' | 'highlighter' | null>(null);
   // State to store the currently selected color for annotations
   const [selectedColor, setSelectedColor] = useState<string>('#ffff00'); // Default highlight color
-  // Hook to detect if the user is on a mobile device
-  // This can be used for responsive adjustments or enabling mobile-specific features/workarounds
-  const isMobile = useMediaQuery({ maxWidth: 767 }); // Example breakpoint
-
-  // Mobile screenshot prevention guidance:
-  // On mobile platforms, preventing screenshots programmatically is often
-  // difficult or not fully supported by web APIs. Native mobile apps might
-  // have better capabilities (e.g., FLAG_SECURE on Android). For a web app,
-  // you might need to explore OS-level restrictions or native wrappers if
-  // this is a strict requirement. No web standard guarantees this.
 
   // Debounced function to save annotations to the backend.
   // This helps prevent excessive API calls while the user is actively drawing
@@ -78,17 +80,17 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
   // It filters annotations to save only those created by the current user
   // and prepares the data format for the API.
   // Note: `toObject` needs to capture all necessary properties for recreation.
-  const debouncedSaveAnnotations = debounce(async (annotations: any[]) => {
+  const debouncedSaveAnnotations = useMemo(() => debounce(async (annotations: fabric.Object[]) => {
     // Filter annotations to only include those drawn by the current user
-    const userAnnotations = annotations.filter((anno: any) => anno.userId === userId);
+    const userAnnotations = annotations.filter((anno) => (anno as FabricAnno).userId === userId);
     // Prepare annotation data for saving (simplify fabric objects)
-    const annotationData = userAnnotations.map((anno: any) => ({
+    const annotationData = userAnnotations.map((anno) => ({
       pdf_id: pdfId,
       user_id: userId,
-      page: anno.page,
-      rect: anno.toObject(['left', 'top', 'width', 'height', 'scaleX', 'scaleY', 'angle']), // Basic position/size
-      type: anno.type, // e.g., 'path', 'rect'
-      color: anno.stroke || anno.fill,
+      page: (anno as FabricAnno).page,
+      rect: anno.toObject(['left', 'top', 'width', 'height', 'scaleX', 'scaleY', 'angle']) as fabric.IRectOptions,
+      type: anno.type || 'unknown',
+      color: anno.stroke || anno.fill || '',
       // You might need to add more specific data based on the fabric object type
     }));
 
@@ -102,12 +104,12 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       if (!response.ok) {
         console.error('Failed to save annotations');
       } else {
-        onAnnotationSave(annotationData); // Notify parent component
+        onAnnotationSave(annotationData as Annotation[]);
       }
     } catch (error) {
       console.error('Error saving annotations:', error);
     }
-  }, 1000); // Save annotations 1 second after the last change
+  }, 1000), [pdfId, userId, onAnnotationSave]); // Save annotations 1 second after the last change
 
   // Effect hook to initialize and manage the Fabric.js canvas.
   // This runs when the component mounts or when key dependencies change (tools, color, initial annotations).
@@ -132,26 +134,24 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       initialAnnotations.forEach((anno) => {
         // Check if the annotation is for the current page before loading
         if (anno.page === pageNumber) {
-
-
-        // Recreate fabric objects from stored data - this requires careful mapping
-        // based on how you saved the annotations.
-        // Example for a rectangle (highlight):
-        if (anno.type === 'rect') {
-          const rect = new fabric.Rect({
-            ...anno.rect, // Load saved properties
-            fill: anno.color,
-            opacity: 0.3, // Highlight opacity
-            selectable: false, // Make highlights not selectable for drawing
-            evented: false, // Do not trigger events on highlights
-            userId: anno.user_id, // Store user ID on the fabric object
-            page: anno.page, // Store page number
-          });
-          // Add the created Fabric object to the canvas
-          fabricCanvas.add(rect);
-        }
-        // Add logic for other types (e.g., 'path' for drawings)
-        // ...
+          // Recreate fabric objects from stored data - this requires careful mapping
+          // based on how you saved the annotations.
+          // Example for a rectangle (highlight):
+          if (anno.type === 'rect') {
+            const rect = new fabric.Rect({
+              ...anno.rect, // Load saved properties
+              fill: anno.color,
+              opacity: 0.3, // Highlight opacity
+              selectable: false, // Make highlights not selectable for drawing
+              evented: false, // Do not trigger events on highlights
+              userId: anno.user_id, // Store user ID on the fabric object
+              page: anno.page, // Store page number
+            });
+            // Add the created Fabric object to the canvas
+            fabricCanvas.add(rect);
+          }
+          // Add logic for other types (e.g., 'path' for drawings)
+          // ...
         }
       });
       // Render the canvas to display the loaded annotations
@@ -170,7 +170,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
 
       // Add event listeners for drawing/highlighting if not in read-only mode
       if (!isReadOnly) {
-        fabricCanvas.on('path:created', (e) => {
+        fabricCanvas.on('path:created', (e: fabric.IEvent<MouseEvent>) => {
           // When a drawing path is created, configure its properties
           if (e.path) {
             e.path.set({
@@ -193,8 +193,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       // Long-press detection for dictionary lookup
       // This logic is complex as it needs to correlate screen coordinates with PDF text.
       // The current implementation is a placeholder.
-      let pressTimer: any;
-      fabricCanvas.on('mouse:down', (options) => {
+      let pressTimer: NodeJS.Timeout;
+      fabricCanvas.on('mouse:down', (options: fabric.IEvent<MouseEvent>) => {
         // Only detect long-press if no tool is active and a word lookup function is provided
         if (!currentTool && onWordLookup) {
           // Start a timer. If the mouse is held down for the duration, it's considered a long press.
@@ -224,7 +224,6 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
         clearTimeout(pressTimer);
       });
 
-
       return () => {
         resizeObserver.disconnect();
         // Dispose of the Fabric canvas instance to free up resources
@@ -235,7 +234,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
     }
   }, [
     currentTool, selectedColor, initialAnnotations, pdfId, userId, pageNumber, // Dependencies that require canvas re-initialization
-    isReadOnly, onWordLookup // Include read-only state and lookup callback
+    isReadOnly, onWordLookup, debouncedSaveAnnotations // Include read-only state and lookup callback
   ]);
   // Re-initialize canvas when tools, color, initialAnnotations, read-only state, or page number changes
 
@@ -306,8 +305,9 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
     if (fabricCanvasRef.current && !isReadOnly) { // Allow clearing only if not read-only
       // Clear only the current user's annotations on the current page
       const objects = fabricCanvasRef.current.getObjects();
-      objects.forEach((obj: any) => {
-        if (obj.userId === userId && obj.page === pageNumber) {
+      objects.forEach((obj: fabric.Object) => {
+        const fobj = obj as FabricAnno;
+        if (fobj.userId === userId && fobj.page === pageNumber) {
           fabricCanvasRef.current?.remove(obj);
         }
       });

@@ -14,7 +14,7 @@ import {
   Bars3Icon as MenuIcon,
 } from "@heroicons/react/24/outline"; // Using heroicons for icons
 
-import { cn } from "@/lib/utils"; // Assuming you have a utility for classnames
+import clsx from "clsx";
 // import { useAuthClient } from "@/lib/auth"; // Assuming this hook provides auth state
 // import { useTheme } from "@/lib/supabaseClient"; // Assuming this hook provides theme and toggler
 
@@ -65,7 +65,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={cn(
+                  className={clsx(
                     "flex items-center text-sm font-medium transition-colors hover:text-accent",
                     pathname === link.href
                       ? "text-accent dark:text-highlight"
@@ -138,7 +138,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
+                className={clsx(
                   "flex items-center px-2 py-1 text-sm font-medium transition-colors hover:text-accent rounded-md",
                   pathname === link.href
                     ? "text-accent dark:text-highlight bg-primary/10 dark:bg-bg/10"

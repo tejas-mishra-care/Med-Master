@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { Label } from './ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 // Import the Question type
-import { Question } from '@/lib/types';
+import { Question } from '../lib/types';
 
 interface QuizCardProps {
   question: Question;
@@ -47,7 +46,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
           <p>{question.text}</p>
           {/* Radio group for answer selection */}
           <RadioGroup
-            onValueChange={(value) => onAnswerSelect(question.id, value)}
+            onValueChange={(value: string) => onAnswerSelect(question.id, value)}
             value={selectedAnswer || ''}
             // Disable interaction after feedback is shown
             // Apply margin top

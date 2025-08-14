@@ -34,7 +34,7 @@ export default function DashboardLayout({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="#">
+                    <Link href="/dashboard/srs">
                       <BrainCircuit />
                       SRS
                     </Link>
@@ -42,7 +42,7 @@ export default function DashboardLayout({
                 </SidebarMenuItem>
                  <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="#">
+                    <Link href="/dashboard/3d-anatomy">
                       <FolderKanban />
                       3D Anatomy
                     </Link>
@@ -50,7 +50,7 @@ export default function DashboardLayout({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="#">
+                    <Link href="/dashboard/pdf-annotation">
                       <File />
                       PDF Annotation
                     </Link>
