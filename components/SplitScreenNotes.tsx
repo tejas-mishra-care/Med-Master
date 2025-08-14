@@ -2,29 +2,28 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PDFViewer from './PDFViewer'; // Assuming PDFViewer component exists
 // Import either TipTap or Quill components based on preference
-// // TipTap Example:
-// import { EditorContent, useEditor } from '@tiptap/react';
-// import StarterKit from '@tiptap/starter-kit';
-// import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
 
 interface SplitScreenNotesProps {
   pdfUrl: string;
+  pdfId: string;
+  userId: string;
   initialNotes: string;
   onNotesSave: (notes: string) => void;
   onPdfSelection: (selection: string) => void;
   syncStatus: 'online' | 'offline' | 'syncing';
-  onInsertSnapshot?: (snapshotData: any) => void; // For 3D viewer integration
+  onInsertSnapshot?: (snapshotData: unknown) => void; // For 3D viewer integration
 }
 
 // Component for a split-screen layout with a PDF viewer on the left and a notes editor on the right.
 const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
   pdfUrl,
+  pdfId,
+  userId,
   initialNotes,
   onNotesSave,
   onPdfSelection,
   syncStatus,
-  onInsertSnapshot, // Function to handle inserting a snapshot from the 3D viewer
+  onInsertSnapshot: _onInsertSnapshot, // Function to handle inserting a snapshot from the 3D viewer (currently unused)
 }) => {
   const [leftWidth, setLeftWidth] = useState(50); // Percentage of the container width
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,12 +39,8 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
   const handleEditorChange = (content: string) => {
     setEditorContent(content);
     notesRef.current = content;
-    // Debounce the save operation
-    const debounceSave = setTimeout(() => {
-      onNotesSave(content);
-    }, 1000); // Save after 1 second of inactivity
-    return () => clearTimeout(debounceSave);
   };
+
   // --- End Rich Text Editor Setup ---
 
   // Effect to debounce the saving of notes as the user types.
@@ -59,8 +54,7 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
     return () => {
       clearTimeout(handler);
     };
-  }, [notesRef.current, onNotesSave]);
-
+  }, [editorContent, onNotesSave]);
 
   // Handle mouse movement for resizing the split view.
   const handleMouseMove = (e: MouseEvent) => {
@@ -78,7 +72,7 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
   };
 
   // Handle mouse down on the divider to start resizing.
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = () => {
     isDragging.current = true;
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -91,15 +85,13 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
     // const editor = quillRef.current?.getEditor();
     // editor.insertText(editor.getLength(), content + '\n');
     // setEditorContent(editor.getContents()); // Update state if needed
- 
+
     // Placeholder implementation:
     setEditorContent(prev => prev + '\n' + content);
     notesRef.current = notesRef.current + '\n' + content;
   };
 
   // Handler for text selection events from the PDFViewer.
-
-  // Handle PDF selection event from PDFViewer
   const handlePdfTextSelection = (selection: string) => {
     if (selection) {
       appendToNotes(selection);
@@ -107,18 +99,8 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
     }
   };
 
-  // Handler for inserting a snapshot from the 3D viewer into the notes.
-  // Handle snapshot insertion from 3D viewer
-  const handleInsertSnapshot = (snapshotData: any) => {
-    if (onInsertSnapshot) {
-        onInsertSnapshot(snapshotData);
-        // Append placeholder text or a visual representation to the editor
-        appendToNotes(`[3D Model Snapshot: ${snapshotData.modelId}]`);
-    }
-  };
-
   // Render the split-screen layout.
- 
+
   return (
     <div
       ref={containerRef}
@@ -129,12 +111,15 @@ const SplitScreenNotes: React.FC<SplitScreenNotesProps> = ({
       <div style={{ width: `${leftWidth}%` }} className="flex-shrink-0 h-full overflow-hidden">
         <PDFViewer
           pdfUrl={pdfUrl}
-          onTextSelection={handlePdfTextSelection} // Pass the handler for text selection
-          onAnnotationSave={(annotation) => {
-            // Call API to save annotation
-            console.log('Saving annotation:', annotation);
+          pdfId={pdfId}
+          userId={userId}
+          onAnnotationSave={(annotations) => {
+            // TODO: integrate backend save here
+            console.log('Saving annotations:', annotations);
           }}
-           // Add other necessary props
+          onAddToNotes={(excerpt) => {
+            handlePdfTextSelection(excerpt);
+          }}
         />
       </div>
 

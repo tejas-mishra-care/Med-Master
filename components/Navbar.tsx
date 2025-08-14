@@ -18,8 +18,11 @@ import clsx from "clsx";
 // import { useAuthClient } from "@/lib/auth"; // Assuming this hook provides auth state
 // import { useTheme } from "@/lib/supabaseClient"; // Assuming this hook provides theme and toggler
 
+type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+type NavLink = { href: string; label: string; icon: IconType };
+
 // Define navigation links
-const navLinks = [
+const navLinks: NavLink[] = [
   // Link to the main user dashboard
   { href: "/dashboard", label: "Dashboard", icon: HomeIcon },
   // Link to the daily quiz page
