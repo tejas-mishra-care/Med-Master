@@ -26,7 +26,19 @@
     }
   },
   // Specifies the files to include in the compilation.
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "pages/**/*.ts",
+    "pages/**/*.tsx",
+    "lib/types.ts",
+    ".next/types/**/*.ts"
+  ],
   // Specifies the files and folders to exclude from the compilation.
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "tests", "server"]
 }

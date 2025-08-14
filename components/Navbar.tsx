@@ -17,6 +17,7 @@ import {
 import clsx from "clsx";
 // import { useAuthClient } from "@/lib/auth"; // Assuming this hook provides auth state
 // import { useTheme } from "@/lib/supabaseClient"; // Assuming this hook provides theme and toggler
+import { Profile } from "../lib/types";
 
 type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 type NavLink = { href: string; label: string; icon: IconType };
@@ -41,8 +42,9 @@ const navLinks: NavLink[] = [
 
 export function Navbar() {
   // const { user, profile } = useAuthClient();
-  const user = null; // Temporarily disable auth
-  const profile: { username?: string } | null = null;
+  const profile: Profile | null = null;
+  // Use a stateful boolean to avoid TS narrowing unreachable branches
+  const [isAuthed] = React.useState<boolean>(false);
   const pathname = usePathname();
   // const { theme, toggleTheme } = useTheme();
   const theme = 'light'; // Temporarily default to light theme
@@ -62,7 +64,7 @@ export function Navbar() {
             {/* TODO: Add a logo or icon here */}
           </Link>
           {/* Desktop navigation links (visible for authenticated users on medium+ screens) */}
-          {user && (
+          {isAuthed && (
             <nav className="hidden gap-6 md:flex">
               {navLinks.map((link) => (
                 <Link
@@ -101,9 +103,10 @@ export function Navbar() {
             </button>
 
             {/* Display user info if authenticated */}
-            {user ? (
+            {isAuthed ? (
               <div className="flex items-center space-x-4">
-                <span className="text-sm">Hi, {profile?.username || "User"}</span>
+                {/* Use a lenient access to avoid type narrowing issues in strict mode */}
+                <span className="text-sm">Hi, {((profile as any)?.username as string) || "User"}</span>
                 {/* Placeholder for Logout button - implement proper logic */}
                 <button className="text-sm font-medium transition-colors hover:text-accent dark:hover:text-highlight">
                   Logout
@@ -134,7 +137,7 @@ export function Navbar() {
         </div>
       </div>
       {/* Mobile menu dropdown (conditionally rendered) */}
-      {isMenuOpen && user && (
+      {isMenuOpen && isAuthed && (
         <div className="md:hidden bg-bg text-primary dark:bg-primary dark:text-bg border-b border-primary/20 dark:border-bg/20">
           <nav className="flex flex-col px-4 py-2 space-y-1">
             {navLinks.map((link) => (

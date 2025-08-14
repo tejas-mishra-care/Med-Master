@@ -24,9 +24,9 @@ interface Annotation {
   pdf_id: string;
   user_id: string;
   page: number;
-  rect: fabric.IRectOptions;
+  rect: any;
   type: string;
-  color: string | fabric.Gradient | fabric.Pattern;
+  color: string;
 }
 
 interface PDFViewerProps {
@@ -88,7 +88,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       pdf_id: pdfId,
       user_id: userId,
       page: (anno as FabricAnno).page,
-      rect: anno.toObject(['left', 'top', 'width', 'height', 'scaleX', 'scaleY', 'angle']) as fabric.IRectOptions,
+      rect: anno.toObject(['left', 'top', 'width', 'height', 'scaleX', 'scaleY', 'angle']) as any,
       type: anno.type || 'unknown',
       color: anno.stroke || anno.fill || '',
       // You might need to add more specific data based on the fabric object type
@@ -139,7 +139,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
           // Example for a rectangle (highlight):
           if (anno.type === 'rect') {
             const rect = new fabric.Rect({
-              ...anno.rect, // Load saved properties
+              ...(anno.rect as any), // Load saved properties
               fill: anno.color,
               opacity: 0.3, // Highlight opacity
               selectable: false, // Make highlights not selectable for drawing
@@ -170,14 +170,13 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
 
       // Add event listeners for drawing/highlighting if not in read-only mode
       if (!isReadOnly) {
-        fabricCanvas.on('path:created', (e: fabric.IEvent<MouseEvent>) => {
+        fabricCanvas.on('path:created', (e: any) => {
           // When a drawing path is created, configure its properties
           if (e.path) {
             e.path.set({
               stroke: selectedColor, // Set stroke color based on selectedColor state
               strokeWidth: currentTool === 'pen' ? 2 : 15, // Adjust stroke width based on the tool
               // Use 'multiply' composition for highlighter effect (darkens pixels below)
-              globalCompositeOperation: currentTool === 'highlighter' ? 'multiply' : 'source-over',
               opacity: currentTool === 'highlighter' ? 0.5 : 1, // Adjust opacity
               selectable: false, // Make drawn objects not selectable after creation
               evented: false, // Prevent event propagation
@@ -194,7 +193,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       // This logic is complex as it needs to correlate screen coordinates with PDF text.
       // The current implementation is a placeholder.
       let pressTimer: NodeJS.Timeout;
-      fabricCanvas.on('mouse:down', (options: fabric.IEvent<MouseEvent>) => {
+      fabricCanvas.on('mouse:down', (options: any) => {
         // Only detect long-press if no tool is active and a word lookup function is provided
         if (!currentTool && onWordLookup) {
           // Start a timer. If the mouse is held down for the duration, it's considered a long press.
@@ -206,7 +205,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
             console.log('Long press detected at:', options.pointer);
             // Call the onWordLookup callback with placeholder data.
             // Placeholder: Logic to get text excerpt under cursor and call dictionary API
-            onWordLookup('placeholder_word', { x: options.pointer.x!, y: options.pointer.y! });
+            onWordLookup('placeholder_word', { x: options.pointer?.x ?? 0, y: options.pointer?.y ?? 0 });
             // Example: fetch(`/api/dict/define?word=medical`)
             // .then(res => res.json())
             // .then(data => console.log(data))
@@ -264,19 +263,21 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
       // Configure brush for the selected tool
       if (currentTool !== tool) {
         if (tool === 'pen') {
-          fabricCanvasRef.current.freeDrawingBrush.color = selectedColor;
-          fabricCanvasRef.current.freeDrawingBrush.width = 2;
+          if (fabricCanvasRef.current.freeDrawingBrush) {
+            fabricCanvasRef.current.freeDrawingBrush.color = selectedColor as any;
+            fabricCanvasRef.current.freeDrawingBrush.width = 2 as any;
+          }
           // Potentially set composition mode here if needed for pen
         } else if (tool === 'highlighter') {
-          fabricCanvasRef.current.freeDrawingBrush.color = selectedColor; // Highlighter color
-          fabricCanvasRef.current.freeDrawingBrush.width = 15; // Thicker for highlight
-          fabricCanvasRef.current.freeDrawingBrush.globalCompositeOperation = 'multiply'; // Achieve highlight effect
+          if (fabricCanvasRef.current.freeDrawingBrush) {
+            fabricCanvasRef.current.freeDrawingBrush.color = selectedColor as any; // Highlighter color
+            fabricCanvasRef.current.freeDrawingBrush.width = 15 as any; // Thicker for highlight
+            // globalCompositeOperation is not available on Fabric v6 brushes; rely on opacity instead
+          }
         }
       } else {
         // When turning off drawing mode
-        if (fabricCanvasRef.current.freeDrawingBrush) {
-          fabricCanvasRef.current.freeDrawingBrush.globalCompositeOperation = 'source-over'; // Reset composition
-        }
+        // No-op for Fabric v6
       }
     }
   };
@@ -285,7 +286,9 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
   const selectColor = (color: string) => {
     setSelectedColor(color);
     if (fabricCanvasRef.current && fabricCanvasRef.current.isDrawingMode) {
-      fabricCanvasRef.current.freeDrawingBrush.color = color;
+      if (fabricCanvasRef.current.freeDrawingBrush) {
+        fabricCanvasRef.current.freeDrawingBrush.color = color as any;
+      }
       fabricCanvasRef.current.renderAll(); // Re-render to show color change on brush
     }
   };

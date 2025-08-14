@@ -43,7 +43,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
         </CardHeader>
         <CardContent>
           {/* Display the question text */}
-          <p>{question.text}</p>
+          <p>{question.question_text}</p>
           {/* Radio group for answer selection */}
           <RadioGroup
             onValueChange={(value: string) => onAnswerSelect(question.id, value)}

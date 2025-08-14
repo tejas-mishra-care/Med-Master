@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+
 // Assuming you have this type defined
-import { SRSReview } from '@/lib/types'; // Assuming you have this type defined
+import { SRSReview } from '../lib/types'; // Assuming you have this type defined
 
 interface SRSCardProps {
   card: {
