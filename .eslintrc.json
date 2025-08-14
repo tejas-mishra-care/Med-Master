@@ -4,9 +4,7 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
+
   "rules": {
     // Add custom rules here
   }

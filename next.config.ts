@@ -1,4 +1,4 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -22,42 +22,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 's3.amazonaws.com', // Placeholder
-      },
-    ],
-  },
-  experimental: {
-    appDir: true, // Enables the App Router
-  },
-};
-
-export default nextConfig;
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 's3.amazonaws.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.s3.amazonaws.com',
       },
     ],
   },

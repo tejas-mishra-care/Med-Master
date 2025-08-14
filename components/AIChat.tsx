@@ -4,10 +4,10 @@
 import { useState, useRef, useEffect } from 'react';
 // UI components from shadcn/ui
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { CopyIcon, SaveIcon } from 'lucide-react';
 
@@ -48,6 +48,8 @@ export function AIChat() {
 
   useEffect(() => {
     // Scroll to bottom on new message
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
       });
@@ -62,6 +64,7 @@ export function AIChat() {
     const userMessage: Message = {
       id: Date.now().toString() + '-user',
       text: input,
+      isUser: true,
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMessage]);
@@ -107,15 +110,16 @@ export function AIChat() {
       setMessages((prev) => [...prev, aiMessage]);
 
     // Catch any errors during the API call
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessageText = error instanceof Error ? error.message : "An unexpected error occurred.";
       toast({
         title: "Error fetching AI response",
-        description: error.message || "An unexpected error occurred.",
+        description: errorMessageText,
         variant: "destructive",
       });
       const errorMessage: Message = {
         id: Date.now().toString() + '-error',
-        text: `Error: ${error.message}`,
+        text: `Error: ${errorMessageText}`,
         isUser: false,
         timestamp: new Date(),
       };
@@ -136,17 +140,17 @@ export function AIChat() {
     }
   };
 
-  const addContext = (item: ContextItem) => {
-    // Prevent duplicates
-    // Adds an item to the context state
-    if (!context.some(c => c.id === item.id)) {
-      setContext(prev => [...prev, item]);
-      toast({
-        title: "Context Added",
-        description: `Added ${item.type} to context.`,
-      });
-    }
-  };
+  // const addContext = (item: ContextItem) => {
+  //   // Prevent duplicates
+  //   // Adds an item to the context state
+  //   if (!context.some(c => c.id === item.id)) {
+  //     setContext(prev => [...prev, item]);
+  //     toast({
+  //       title: "Context Added",
+  //       description: `Added ${item.type} to context.`,
+  //     });
+  //   }
+  // };
 
   const handleSaveNote = (text: string) => {
     // TODO: Implement "Save to Notes" functionality

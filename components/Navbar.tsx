@@ -8,16 +8,15 @@ import {
   HomeIcon,
   BookOpenIcon,
   CubeTransparentIcon,
-  ChatBubbleBottomCenterTextIcon, // Use this for AI/Batches
-  ChatAlt2Icon,
+  ChatBubbleBottomCenterTextIcon,
   MoonIcon,
   SunIcon,
-  MenuIcon,
-} from "@heroicons/react/outline"; // Using heroicons for icons
+  Bars3Icon as MenuIcon,
+} from "@heroicons/react/24/outline"; // Using heroicons for icons
 
 import { cn } from "@/lib/utils"; // Assuming you have a utility for classnames
-import { useAuthClient } from "@/lib/auth"; // Assuming this hook provides auth state
-import { useTheme } from "@/lib/supabaseClient"; // Assuming this hook provides theme and toggler
+// import { useAuthClient } from "@/lib/auth"; // Assuming this hook provides auth state
+// import { useTheme } from "@/lib/supabaseClient"; // Assuming this hook provides theme and toggler
 
 // Define navigation links
 const navLinks = [
@@ -38,9 +37,13 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const { user, profile } = useAuthClient();
+  // const { user, profile } = useAuthClient();
+  const user = null; // Temporarily disable auth
+  const profile: { username?: string } | null = null;
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
+  const theme = 'light'; // Temporarily default to light theme
+  const toggleTheme = () => {};
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   // State to manage mobile menu visibility
 
@@ -103,14 +106,16 @@ export function Navbar() {
                   Logout
                 </button>
               </div>
-            {/* Display login link if not authenticated */}
             ) : (
-              <Link
-                href="/login" // Assuming a login page path
-                className="text-sm font-medium transition-colors hover:text-accent dark:hover:text-highlight"
-              >
-                Login
-              </Link>
+              <div>
+                {/* Display login link if not authenticated */}
+                <Link
+                  href="/login" // Assuming a login page path
+                  className="text-sm font-medium transition-colors hover:text-accent dark:hover:text-highlight"
+                >
+                  Login
+                </Link>
+              </div>
             )}
 
             {/* Mobile menu button (visible on small screens) */}
