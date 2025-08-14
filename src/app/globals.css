@@ -101,3 +101,14 @@
     color: hsl(var(--foreground));
   }
 }
+
+/* Ensure full viewport paint */
+html, body { height: 100%; }
+
+/* Sidebar color utilities (since Tailwind doesn't know these by default) */
+@layer utilities {
+  .bg-sidebar { background-color: hsl(var(--sidebar-background)); }
+  .text-sidebar-foreground { color: hsl(var(--sidebar-foreground)); }
+  .border-sidebar-border { border-color: hsl(var(--sidebar-border)); }
+  .ring-sidebar-ring { --tw-ring-color: hsl(var(--sidebar-ring)); }
+}
