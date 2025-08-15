@@ -53,7 +53,7 @@ export default function MedicalAssistant() {
   };
 
   return (
-    <Card className="h-[calc(100vh-10rem)] flex flex-col">
+    <Card className="h-[calc(100vh-8rem)] flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className='flex items-center gap-2'>
           <BrainCircuit className="w-6 h-6 text-primary" />

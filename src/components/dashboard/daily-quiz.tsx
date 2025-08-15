@@ -80,7 +80,7 @@ export default function DailyQuiz() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
+      <div className="flex items-center justify-center h-[calc(100vh-8rem)]">
         <Loader2 className="w-12 h-12 animate-spin text-primary" />
       </div>
     );
@@ -88,7 +88,7 @@ export default function DailyQuiz() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
+      <div className="flex items-center justify-center h-[calc(100vh-8rem)]">
         <Alert variant="destructive" className="max-w-md">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
