@@ -9,7 +9,7 @@ import {
   Trophy,
   User,
   Home,
-  Cube
+  Box
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -51,7 +51,7 @@ export default function DashboardLayout({
               </SidebarMenuButton>
               <SidebarMenuButton asChild>
                 <Link href="/dashboard/anatomy" className="nav-item hover-lift">
-                  <Cube className="w-4 h-4" />
+                  <Box className="w-4 h-4" />
                   <span className="hidden sm:inline">3D Anatomy</span>
                 </Link>
               </SidebarMenuButton>
