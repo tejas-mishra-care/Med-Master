@@ -2,7 +2,7 @@ import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Bounds, Html } from '@react-three/drei';
 import { Vector3, Box3, Object3D } from 'three';
-import { loadGLTF } from '../../../lib/three/loaders';
+import { loadGLTF } from '../../../../lib/three/loaders';
 
 interface AnatomyViewerProps {
   modelPath: string;
@@ -40,11 +40,14 @@ const Model: React.FC<ModelProps> = ({
 
   // Load the model
   useEffect(() => {
+    console.log('Loading model:', modelPath);
     setLoading(true);
     setError(null);
 
     loadGLTF(modelPath)
       .then((gltf) => {
+        console.log('Model loaded successfully:', gltf);
+        
         // Clear existing scene
         while (scene.children.length > 0) {
           scene.remove(scene.children[0]);
@@ -61,6 +64,8 @@ const Model: React.FC<ModelProps> = ({
         const size = box.getSize(new Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const distance = defaultDistance * (maxDim / 2);
+
+        console.log('Model dimensions:', size, 'Distance:', distance);
 
         // Set camera position
         camera.position.set(distance, distance, distance);
