@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const SummarizePdfInputSchema = z.object({
   pdfDataUri: z
@@ -49,7 +49,7 @@ const summarizePdfFlow = ai.defineFlow(
     inputSchema: SummarizePdfInputSchema,
     outputSchema: SummarizePdfOutputSchema,
   },
-  async input => {
+  async (input: SummarizePdfInput) => {
     const {output} = await prompt(input);
     return output!;
   }

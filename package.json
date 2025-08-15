@@ -70,6 +70,9 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.160.0",
     "three-stdlib": "^2.30.0",
+  "openai": "^4.9.0",
+  "genkit": "^0.1.0",
+  "@genkit-ai/googleai": "^0.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

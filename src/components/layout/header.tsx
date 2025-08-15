@@ -33,7 +33,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full header-modern dark:header-modern-dark">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+  <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
            {/* Always show menu trigger so users can open the sidebar at any width */}
            <SidebarTrigger aria-label="Open menu" />

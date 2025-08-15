@@ -1,20 +1,19 @@
 // lib/supabaseClient.ts
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Database } from './types'; // Assuming you have a types.ts generated from your schema
 
-let browserSupabase: SupabaseClient<Database> | null = null;
+let browserSupabase: SupabaseClient | null = null;
  // Keep a single instance in the browser to avoid re-creating the client
 
 /**
  * Get a Supabase client instance for use in the browser.
  * This client uses the public anon key and handles user authentication.
  */
-export function getBrowserSupabase(): SupabaseClient<Database> {
+export function getBrowserSupabase(): SupabaseClient {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     throw new Error('Missing Supabase environment variables');
   }
   if (!browserSupabase) {
-    browserSupabase = createClient<Database>(
+  browserSupabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     );
@@ -31,19 +30,22 @@ export function getBrowserSupabase(): SupabaseClient<Database> {
  * @param req - The incoming request object (optional, for context/headers)
  * @param res - The outgoing response object (optional, for cookies)
  */
-export function getServerSupabase(req?: any, res?: any): SupabaseClient<Database> {
-  // Pseudocode: In a real application, you would securely pass the service role key
-  // This example assumes it's available via environment variable on the server.
+export function getServerSupabase(req?: any, res?: any): SupabaseClient {
+  // Safety: ensure this helper is only called on the server. Calling it in the
+  // browser risks leaking the service role key.
+  if (typeof window !== 'undefined') {
+    throw new Error('getServerSupabase() must only be called on the server (Node/Server Components / API routes).');
+  }
+
+  // In production/dev server environments, require the service role key and URL.
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    console.error('Missing Supabase service role key or URL');
-    // Fallback or throw an error depending on your desired behavior
-    return getBrowserSupabase(); // Or throw new Error('Missing service role key');
+    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL in server environment. Set these in your server .env.');
   }
 
   // You might configure cookie handling here for auth on serverless functions
   // const options = res ? { global: { headers: { cookie: req.headers.cookie } }, auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, cookieOptions: { domain: '.yourdomain.com', path: '/', sameSite: 'Lax', secure: true } } : {};
 
-  return createClient<Database>(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
     // options
@@ -69,15 +71,14 @@ export async function fetchProfile(userId: string) {
     console.error('Error fetching profile:', error);
     return null;
   }
-  // Explicitly cast to Profile type if needed and not handled by Database type
-  return data;
+  return data as any;
 }
 
 /**
- * Example typed helper: Upsert a user's profile.
+ * Example helper: Upsert a user's profile.
  * @param profile - The profile data to upsert.
  */
-export async function upsertProfile(profile: Database['public']['Tables']['profiles']['Insert']) {
+export async function upsertProfile(profile: any) {
   const supabase = getBrowserSupabase(); // or getServerSupabase depending on context
   const { data, error } = await supabase
     .from('profiles')
@@ -89,8 +90,7 @@ export async function upsertProfile(profile: Database['public']['Tables']['profi
     console.error('Error upserting profile:', error);
     // Handle error appropriately
   }
-  // Explicitly cast to Profile type if needed
-  return data;
+  return data as any;
 }
 
 /**

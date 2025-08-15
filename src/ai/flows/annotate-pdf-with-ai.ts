@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const AnnotatePdfWithAIInputSchema = z.object({
   highlightedText: z.string().describe('The highlighted text from the PDF to be explained.'),
@@ -43,7 +43,7 @@ const annotatePdfWithAIFlow = ai.defineFlow(
     inputSchema: AnnotatePdfWithAIInputSchema,
     outputSchema: AnnotatePdfWithAIOutputSchema,
   },
-  async input => {
+  async (input: AnnotatePdfWithAIInput) => {
     const {output} = await prompt(input);
     return output!;
   }

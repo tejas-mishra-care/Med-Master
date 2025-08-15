@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const GetMedicalExplanationInputSchema = z.object({
   prompt: z.string().describe('The medical question to be answered.'),
@@ -49,7 +49,7 @@ const getMedicalExplanationFlow = ai.defineFlow(
     inputSchema: GetMedicalExplanationInputSchema,
     outputSchema: GetMedicalExplanationOutputSchema,
   },
-  async input => {
+  async (input: GetMedicalExplanationInput) => {
     const {output} = await prompt(input);
     // Assuming the model returns the answer and sources as a single string,
     // you might need to parse the output to extract the sources.

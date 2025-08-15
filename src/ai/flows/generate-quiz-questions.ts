@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const GenerateQuizQuestionsInputSchema = z.object({
   notes: z.string().describe('The notes to generate quiz questions from.'),
@@ -49,7 +49,7 @@ const generateQuizQuestionsFlow = ai.defineFlow(
     inputSchema: GenerateQuizQuestionsInputSchema,
     outputSchema: GenerateQuizQuestionsOutputSchema,
   },
-  async input => {
+  async (input: GenerateQuizQuestionsInput) => {
     const {output} = await prompt(input);
     return output!;
   }
