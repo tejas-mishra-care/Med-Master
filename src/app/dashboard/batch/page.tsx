@@ -287,6 +287,10 @@ export default function BatchPage() {
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
+                        id="batch-search"
+                        name="batch-search"
+                        aria-label="Search batches"
+                        autoComplete="off"
                         placeholder="Search..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -480,6 +484,9 @@ export default function BatchPage() {
               <div>
                 <label className="text-sm font-medium mb-2 block">Batch Code</label>
                 <Input
+                  id="join-batch-code"
+                  name="join-batch-code"
+                  aria-label="Join batch code"
                   placeholder="Enter batch code (e.g., CARD2024)"
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}

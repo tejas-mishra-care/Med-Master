@@ -136,6 +136,9 @@ export default function MedicalAssistant() {
         </ScrollArea>
         <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t pt-4">
           <Input
+            id="medical-assistant-input"
+            name="medical-assistant-input"
+            aria-label="Ask medical assistant"
             value={input}
             onChange={handleInputChange}
             placeholder="Ask a medical question..."

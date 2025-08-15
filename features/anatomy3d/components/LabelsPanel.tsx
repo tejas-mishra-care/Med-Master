@@ -101,6 +101,9 @@ const LabelsPanel: React.FC<LabelsPanelProps> = ({
                       </Button>
                     </div>
                     <Input
+                      id="label-title"
+                      name="label-title"
+                      aria-label="Label title"
                       placeholder="Label title"
                       value={newLabelTitle}
                       onChange={(e) => setNewLabelTitle(e.target.value)}

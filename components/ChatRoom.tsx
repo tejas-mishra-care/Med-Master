@@ -161,11 +161,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ batchId, userId, username }) => {
         </label> */}
         {/* Text input for typing messages */}
         <input
+          id="chat-message"
+          name="chat-message"
           type="text"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Type your message..."
+          aria-label="Type your message"
           className="flex-grow p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
         />
         {/* Send button */}

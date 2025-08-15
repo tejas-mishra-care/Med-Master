@@ -73,6 +73,10 @@ const DebugPanel: React.FC<DebugPanelProps> = ({
         <div className="relative">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
           <Input
+            id="debug-nodes-search"
+            name="debug-nodes-search"
+            aria-label="Search nodes"
+            autoComplete="off"
             placeholder="Search nodes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

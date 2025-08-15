@@ -180,6 +180,10 @@ export default function NotesPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  id="notes-search"
+                  name="notes-search"
+                  aria-label="Search notes"
+                  autoComplete="off"
                   placeholder="Search notes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -328,6 +332,9 @@ export default function NotesPage() {
                   {isEditing ? (
                     <>
                       <Input
+                        id="note-title"
+                        name="note-title"
+                        aria-label="Note title"
                         value={selectedNote.title}
                         onChange={(e) => setSelectedNote({ ...selectedNote, title: e.target.value })}
                         placeholder="Note title"
@@ -344,9 +351,12 @@ export default function NotesPage() {
                           ))}
                         </select>
                         <Input
+                          id="note-tags"
+                          name="note-tags"
+                          aria-label="Note tags"
                           value={selectedNote.tags.join(', ')}
-                          onChange={(e) => setSelectedNote({ 
-                            ...selectedNote, 
+                          onChange={(e) => setSelectedNote({
+                            ...selectedNote,
                             tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag)
                           })}
                           placeholder="Tags (comma separated)"
@@ -406,6 +416,9 @@ export default function NotesPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Input
+                id="new-note-title"
+                name="new-note-title"
+                aria-label="New note title"
                 placeholder="Note title"
                 value={newNote.title}
                 onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
@@ -420,6 +433,9 @@ export default function NotesPage() {
                 ))}
               </select>
               <Input
+                id="new-note-tags"
+                name="new-note-tags"
+                aria-label="New note tags"
                 placeholder="Tags (comma separated)"
                 value={newNote.tags}
                 onChange={(e) => setNewNote({ ...newNote, tags: e.target.value })}

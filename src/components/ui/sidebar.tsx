@@ -106,11 +106,16 @@ const SidebarProvider = React.forwardRef<
   const state = open ? "expanded" : "collapsed"
 
   // Remove debug logging in production
+  // Initialize sidebar state from cookie on mount
   React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log("[Sidebar] state=", state, "open=", open, "openMobile=", openMobile, "isMobile=", isMobile)
+    if (typeof document !== 'undefined') {
+      const cookie = document.cookie.split(';').find(c => c.trim().startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+      if (cookie) {
+        const value = cookie.split('=')[1]
+        _setOpen(value === 'true')
+      }
     }
-  }, [state, open, openMobile, isMobile])
+  }, [])
 
   const contextValue = React.useMemo<SidebarContext>(() => ({
     state,

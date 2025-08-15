@@ -153,9 +153,13 @@ export default function Anatomy3DClient() {
           <Card>
             <CardHeader>
               <CardTitle>Anatomical Systems</CardTitle>
-              <div className="relative">
+                <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
+                  id="anatomy-search"
+                  name="anatomy-search"
+                  aria-label="Search anatomical systems"
+                  autoComplete="off"
                   placeholder="Search systems..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
