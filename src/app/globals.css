@@ -187,6 +187,31 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 
+  /* Resilient dashboard shell used by app/dashboard/layout.tsx */
+  .dashboard-shell {
+    display: grid;
+    width: 100%;
+    min-height: calc(100vh - 4rem); /* account for header height */
+    
+    /* Default: full sidebar */
+    grid-template-columns: var(--sidebar-width, 16rem) minmax(0, 1fr);
+    
+    /* Mobile: Stack layout (sidebar becomes Sheet component) */
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Handle collapsed state when SidebarProvider sets it */
+  .sidebar-wrapper.is-collapsed .dashboard-shell {
+    grid-template-columns: var(--sidebar-width-icon, 3rem) minmax(0, 1fr);
+  }
+
+  /* Ensure main content doesn't overflow */
+  .dashboard-shell > *:last-child {
+    min-width: 0;
+  }
+
   /* Feature Card Styles */
   .feature-card {
     @apply p-6 rounded-xl border bg-card/50 backdrop-blur-sm;

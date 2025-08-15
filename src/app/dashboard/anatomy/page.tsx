@@ -98,7 +98,7 @@ const removeLabel = async (labelId: string): Promise<void> => {
 
 export default function AnatomyPage() {
   return (
-    <React.Suspense fallback={<div className="flex items-center justify-center h-screen"><div className="text-lg">Loading...</div></div>}>
+    <React.Suspense fallback={<div className="flex items-center justify-center h-full"><div className="text-lg">Loading...</div></div>}>
       <AnatomyPageContent />
     </React.Suspense>
   );
@@ -189,7 +189,7 @@ function AnatomyPageContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-full">
         <div className="text-lg">Loading anatomy module...</div>
       </div>
     );
@@ -198,7 +198,7 @@ function AnatomyPageContent() {
   console.log('Rendering with systems:', systems);
   
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-full bg-background">
       {/* Left Sidebar */}
       <AnatomySidebar
         systems={systems}
