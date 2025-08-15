@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bot, User, BrainCircuit, Send } from 'lucide-react';
-import { getMedicalExplanation, GetMedicalExplanationInput, GetMedicalExplanationOutput } from '@/ai/flows/medical-assistant';
 import { ScrollArea } from '../ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
@@ -15,6 +14,13 @@ interface Message {
   sources?: string[];
   disclaimer?: string;
 }
+
+type GetMedicalExplanationOutput = {
+  answer: string;
+  sources: string[];
+  tokens_used: number;
+  disclaimer: string;
+};
 
 export default function MedicalAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -37,7 +43,16 @@ export default function MedicalAssistant() {
     setError(null);
 
     try {
-      const assistantResponse: GetMedicalExplanationOutput = await getMedicalExplanation({ prompt: input });
+      const res = await fetch('/api/medical-assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: input }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error || `Request failed with ${res.status}`);
+      }
+      const assistantResponse: GetMedicalExplanationOutput = await res.json();
       const assistantMessage: Message = {
         role: 'assistant',
         content: assistantResponse.answer,

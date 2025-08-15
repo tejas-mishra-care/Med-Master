@@ -4,12 +4,18 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Newspaper, Loader2, RefreshCw } from 'lucide-react';
-import { generateQuizQuestions, GenerateQuizQuestionsOutput } from '@/ai/flows/generate-quiz-questions';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { Progress } from '../ui/progress';
 
+type GenerateQuizQuestionsOutput = {
+  questions: Array<{
+    question: string;
+    options: string[];
+    correctAnswer: string;
+  }>;
+};
 type Question = GenerateQuizQuestionsOutput['questions'][0];
 
 const MOCK_NOTES = `
@@ -38,8 +44,17 @@ export default function DailyQuiz() {
     setIsSubmitted(false);
     setScore(0);
     try {
-      const response = await generateQuizQuestions({ notes: MOCK_NOTES, numQuestions: 5 });
-      setQuizData(response);
+      const res = await fetch('/api/generate-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: MOCK_NOTES, numQuestions: 5 }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error || `Request failed with ${res.status}`);
+      }
+      const data: GenerateQuizQuestionsOutput = await res.json();
+      setQuizData(data);
     } catch (err) {
       setError('Failed to generate quiz questions. Please try again.');
     } finally {

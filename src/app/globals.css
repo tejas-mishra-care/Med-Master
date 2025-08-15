@@ -61,7 +61,9 @@
 
 @layer base {
   * {
-    @apply border-border;
+    /* Use default border width and set color via CSS variable to avoid missing utility */
+    @apply border;
+    border-color: hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground;
@@ -72,12 +74,14 @@
 @layer components {
   /* Modern Card Styles */
   .card-modern {
-    @apply bg-card border border-border/50 shadow-sm hover:shadow-md transition-all duration-200;
+    @apply bg-card border shadow-sm hover:shadow-md transition-all duration-200;
+    border-color: hsl(var(--border) / 0.5);
     backdrop-filter: blur(10px);
   }
 
   .card-modern-dark {
-    @apply bg-card/80 border border-border/30 shadow-lg hover:shadow-xl transition-all duration-200;
+    @apply bg-card/80 border shadow-lg hover:shadow-xl transition-all duration-200;
+    border-color: hsl(var(--border) / 0.3);
     backdrop-filter: blur(20px);
   }
 
@@ -107,20 +111,26 @@
 
   /* Glassmorphism Effects */
   .glass {
-    @apply bg-background/80 backdrop-blur-md border border-border/50;
+    @apply bg-background/80 backdrop-blur-md border;
+    border-color: hsl(var(--border) / 0.5);
   }
 
   .glass-dark {
-    @apply bg-background/60 backdrop-blur-xl border border-border/30;
+    @apply bg-background/60 backdrop-blur-xl border;
+    border-color: hsl(var(--border) / 0.3);
   }
 
   /* Modern Border Styles */
   .border-modern {
-    @apply border border-border/60 hover:border-border transition-colors duration-200;
+    @apply border transition-colors duration-200;
+    border-color: hsl(var(--border) / 0.6);
+    &:hover { border-color: hsl(var(--border)); }
   }
 
   .border-modern-dark {
-    @apply border border-border/40 hover:border-border/60 transition-colors duration-200;
+    @apply border transition-colors duration-200;
+    border-color: hsl(var(--border) / 0.4);
+    &:hover { border-color: hsl(var(--border) / 0.6); }
   }
 
   /* Animated Gradients */
@@ -138,31 +148,37 @@
 
   /* Modern Input Styles */
   .input-modern {
-    @apply bg-background/50 border border-border/50 focus:border-primary/50 transition-all duration-200;
+    @apply bg-background/50 border transition-all duration-200;
+    border-color: hsl(var(--border) / 0.5);
     @apply focus:ring-2 focus:ring-primary/20 focus:outline-none;
   }
 
   .input-modern-dark {
-    @apply bg-background/30 border border-border/30 focus:border-primary/40 transition-all duration-200;
+    @apply bg-background/30 border transition-all duration-200;
+    border-color: hsl(var(--border) / 0.3);
     @apply focus:ring-2 focus:ring-primary/20 focus:outline-none;
   }
 
   /* Sidebar Styles */
   .sidebar-modern {
-    @apply bg-card/80 backdrop-blur-md border-r border-border/50;
+    @apply bg-card/80 backdrop-blur-md border-r;
+    border-right-color: hsl(var(--border) / 0.5);
   }
 
   .sidebar-modern-dark {
-    @apply bg-card/60 backdrop-blur-xl border-r border-border/30;
+    @apply bg-card/60 backdrop-blur-xl border-r;
+    border-right-color: hsl(var(--border) / 0.3);
   }
 
   /* Header Styles */
   .header-modern {
-    @apply bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm;
+    @apply bg-background/95 backdrop-blur-md border-b shadow-sm;
+    border-bottom-color: hsl(var(--border) / 0.5);
   }
 
   .header-modern-dark {
-    @apply bg-background/90 backdrop-blur-xl border-b border-border/30 shadow-lg;
+    @apply bg-background/90 backdrop-blur-xl border-b shadow-lg;
+    border-bottom-color: hsl(var(--border) / 0.3);
   }
 
   /* Dashboard Grid Styles */
@@ -173,26 +189,34 @@
 
   /* Feature Card Styles */
   .feature-card {
-    @apply p-6 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm;
-    @apply hover:bg-card/80 hover:border-border/70 transition-all duration-300;
+    @apply p-6 rounded-xl border bg-card/50 backdrop-blur-sm;
+    border-color: hsl(var(--border) / 0.5);
+    @apply hover:bg-card/80 transition-all duration-300;
+    &:hover { border-color: hsl(var(--border) / 0.7); }
     @apply hover:shadow-lg hover:-translate-y-1;
   }
 
   .feature-card-dark {
-    @apply p-6 rounded-xl border border-border/30 bg-card/30 backdrop-blur-md;
-    @apply hover:bg-card/50 hover:border-border/50 transition-all duration-300;
+    @apply p-6 rounded-xl border bg-card/30 backdrop-blur-md;
+    border-color: hsl(var(--border) / 0.3);
+    @apply hover:bg-card/50 transition-all duration-300;
+    &:hover { border-color: hsl(var(--border) / 0.5); }
     @apply hover:shadow-xl hover:-translate-y-1;
   }
 
   /* Stats Card Styles */
   .stats-card {
-    @apply p-4 rounded-lg border border-border/40 bg-gradient-to-br from-card to-card/80;
-    @apply hover:border-border/60 transition-all duration-200;
+    @apply p-4 rounded-lg border bg-gradient-to-br from-card to-card/80;
+    border-color: hsl(var(--border) / 0.4);
+    @apply transition-all duration-200;
+    &:hover { border-color: hsl(var(--border) / 0.6); }
   }
 
   .stats-card-dark {
-    @apply p-4 rounded-lg border border-border/20 bg-gradient-to-br from-card/40 to-card/20;
-    @apply hover:border-border/40 transition-all duration-200;
+    @apply p-4 rounded-lg border bg-gradient-to-br from-card/40 to-card/20;
+    border-color: hsl(var(--border) / 0.2);
+    @apply transition-all duration-200;
+    &:hover { border-color: hsl(var(--border) / 0.4); }
   }
 
   /* Navigation Styles */
@@ -247,11 +271,12 @@
   }
 
   .scrollbar-modern::-webkit-scrollbar-thumb {
-    @apply bg-border/50 rounded-full;
+    @apply rounded-full;
+    background-color: hsl(var(--border) / 0.5);
   }
 
   .scrollbar-modern::-webkit-scrollbar-thumb:hover {
-    @apply bg-border/70;
+    background-color: hsl(var(--border) / 0.7);
   }
 
   /* Focus Styles */
