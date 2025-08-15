@@ -2,7 +2,7 @@ import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Bounds, Html } from '@react-three/drei';
 import { Vector3, Box3, Object3D } from 'three';
-import { loadGLTF } from '../../../../lib/three/loaders';
+import { loadGLTF } from '../../../lib/three/loaders';
 
 interface AnatomyViewerProps {
   modelPath: string;

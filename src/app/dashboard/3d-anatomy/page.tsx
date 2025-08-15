@@ -5,6 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the 3D viewer to avoid SSR issues
+const AnatomyViewer = dynamic(
+  () => import('../../../features/anatomy3d/components/AnatomyViewer'),
+  { ssr: false, loading: () => <div className="flex items-center justify-center h-full">Loading 3D viewer...</div> }
+);
 import { 
   Brain, 
   Heart, 
@@ -45,6 +52,7 @@ interface AnatomicalSystem {
   organs: string[];
   layers: string[];
   color: string;
+  modelPath: string;
 }
 
 interface Organ {
@@ -61,49 +69,64 @@ interface Organ {
 
 const anatomicalSystems: AnatomicalSystem[] = [
   {
-    id: 'cardiovascular',
-    name: 'Cardiovascular System',
+    id: 'angiology',
+    name: 'Angiology (Cardiovascular)',
     icon: <Heart className="w-6 h-6" />,
     description: 'Heart and blood vessels responsible for circulation',
     organs: ['Heart', 'Aorta', 'Vena Cava', 'Coronary Arteries', 'Pulmonary Vessels'],
     layers: ['Pericardium', 'Myocardium', 'Endocardium', 'Blood Vessels'],
-    color: '#ef4444'
+    color: '#6fb1ff',
+    modelPath: '/models/3D anatomy/angiology.glb'
   },
   {
-    id: 'nervous',
-    name: 'Nervous System',
+    id: 'neurology',
+    name: 'Neurology (Nervous System)',
     icon: <Brain className="w-6 h-6" />,
     description: 'Brain, spinal cord, and peripheral nerves',
     organs: ['Brain', 'Spinal Cord', 'Cranial Nerves', 'Peripheral Nerves'],
     layers: ['Dura Mater', 'Arachnoid', 'Pia Mater', 'Neural Tissue'],
-    color: '#8b5cf6'
+    color: '#ffb86b',
+    modelPath: '/models/3D anatomy/neurology.glb'
   },
   {
-    id: 'respiratory',
-    name: 'Respiratory System',
+    id: 'myology',
+    name: 'Myology (Muscular System)',
     icon: <Activity className="w-6 h-6" />,
-    description: 'Lungs and airways for gas exchange',
-    organs: ['Lungs', 'Trachea', 'Bronchi', 'Alveoli', 'Diaphragm'],
-    layers: ['Pleura', 'Lung Tissue', 'Airways', 'Blood Vessels'],
-    color: '#06b6d4'
+    description: 'Muscles and their functions throughout the body',
+    organs: ['Skeletal Muscles', 'Smooth Muscles', 'Cardiac Muscle', 'Tendons'],
+    layers: ['Epimysium', 'Perimysium', 'Endomysium', 'Muscle Fibers'],
+    color: '#ff7676',
+    modelPath: '/models/3D anatomy/myology.glb'
   },
   {
-    id: 'skeletal',
-    name: 'Skeletal System',
+    id: 'arthrology',
+    name: 'Arthrology (Skeletal System)',
     icon: <Bone className="w-6 h-6" />,
     description: 'Bones, joints, and connective tissue',
     organs: ['Skull', 'Vertebrae', 'Ribs', 'Long Bones', 'Joints'],
     layers: ['Cortical Bone', 'Cancellous Bone', 'Marrow', 'Cartilage'],
-    color: '#f59e0b'
+    color: '#f7e36e',
+    modelPath: '/models/3D anatomy/arthrology.glb'
   },
   {
-    id: 'visual',
-    name: 'Visual System',
+    id: 'splanchnology',
+    name: 'Splanchnology (Internal Organs)',
     icon: <Eye className="w-6 h-6" />,
-    description: 'Eyes and visual processing pathways',
-    organs: ['Eyes', 'Optic Nerves', 'Retina', 'Lens', 'Cornea'],
-    layers: ['Sclera', 'Choroid', 'Retina', 'Vitreous'],
-    color: '#10b981'
+    description: 'Internal organs and visceral systems',
+    organs: ['Liver', 'Stomach', 'Intestines', 'Kidneys', 'Spleen'],
+    layers: ['Serosa', 'Muscularis', 'Submucosa', 'Mucosa'],
+    color: '#9be49b',
+    modelPath: '/models/3D anatomy/splanchnology.glb'
+  },
+  {
+    id: 'muscular_insertions',
+    name: 'Muscular Insertions',
+    icon: <Activity className="w-6 h-6" />,
+    description: 'Muscle attachment points and insertions',
+    organs: ['Humerus', 'Femur', 'Tibia', 'Fibula', 'Scapula'],
+    layers: ['Origin', 'Insertion', 'Tendon', 'Ligament'],
+    color: '#c39bff',
+    modelPath: '/models/3D anatomy/muscular_insertions.glb'
   }
 ];
 
@@ -339,39 +362,37 @@ export default function Anatomy3DPage() {
 
                   {/* 3D/2D Viewer */}
                   <div className="flex-1 border rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
-                    <div className="p-8 text-center">
-                      <div 
-                        className="w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center"
-                        style={{ 
-                          backgroundColor: selectedSystem.color + '20',
-                          color: selectedSystem.color,
-                          transform: `scale(${zoom / 100}) rotate(${rotation}deg)`
-                        }}
-                      >
-                        {selectedSystem.icon}
+                    {viewMode === '3d' ? (
+                      <div className="h-full">
+                        <AnatomyViewer
+                          modelPath={selectedSystem.modelPath}
+                          defaultTarget={selectedSystem.organs[0]}
+                          defaultDistance={3}
+                          onSelectNode={(nodeName) => {
+                            console.log('Selected node:', nodeName);
+                          }}
+                          onHoverNode={(nodeName) => {
+                            console.log('Hovered node:', nodeName);
+                          }}
+                          showLabels={showLabels}
+                          hiddenNodes={new Set()}
+                        />
                       </div>
-                      <h3 className="text-lg font-semibold mb-2">{selectedSystem.name}</h3>
-                      <p className="text-muted-foreground mb-4">{selectedSystem.description}</p>
-                      
-                      {viewMode === '3d' ? (
-                        <div className="space-y-2">
-                          <p className="text-sm text-muted-foreground">
-                            Interactive 3D model of the {selectedSystem.name.toLowerCase()}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Use zoom and rotation controls to explore the anatomy
-                          </p>
-                          {showLabels && (
-                            <div className="flex flex-wrap gap-2 justify-center mt-4">
-                              {selectedSystem.organs.slice(0, 3).map((organ) => (
-                                <Badge key={organ} variant="secondary" className="text-xs">
-                                  {organ}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
+                    ) : (
+                      <div className="p-8 text-center">
+                        <div 
+                          className="w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center"
+                          style={{ 
+                            backgroundColor: selectedSystem.color + '20',
+                            color: selectedSystem.color,
+                            transform: `scale(${zoom / 100}) rotate(${rotation}deg)`
+                          }}
+                        >
+                          {selectedSystem.icon}
                         </div>
-                      ) : (
+                        <h3 className="text-lg font-semibold mb-2">{selectedSystem.name}</h3>
+                        <p className="text-muted-foreground mb-4">{selectedSystem.description}</p>
+                        
                         <div className="space-y-2">
                           <p className="text-sm text-muted-foreground">
                             2D cross-sectional view of the {selectedSystem.name.toLowerCase()}
@@ -380,8 +401,8 @@ export default function Anatomy3DPage() {
                             Toggle layers to see different anatomical structures
                           </p>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Layer Overlays */}
                     {visibleLayers.map((layer) => (
