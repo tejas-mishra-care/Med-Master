@@ -8,10 +8,11 @@ import { Slider } from '@/components/ui/slider';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the 3D viewer to avoid SSR issues
-const AnatomyViewer = dynamic(
-  () => import('../../../../features/anatomy3d/components/AnatomyViewer'),
-  { ssr: false, loading: () => <div className="flex items-center justify-center h-full">Loading 3D viewer...</div> }
-);
+const AnatomyViewer = dynamic(() => import('../../../../features/anatomy3d/components/AnatomyViewer'), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center h-full">Loading 3D viewer...</div>,
+  suspense: false,
+});
 import { 
   Brain, 
   Heart, 
@@ -166,6 +167,12 @@ export default function Anatomy3DPage() {
   const [showLabels, setShowLabels] = useState(true);
   const [showBloodFlow, setShowBloodFlow] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure we're on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLayerToggle = (layer: string) => {
     setVisibleLayers(prev => 
@@ -364,19 +371,28 @@ export default function Anatomy3DPage() {
                   <div className="flex-1 border rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
                     {viewMode === '3d' ? (
                       <div className="h-full">
-                        <AnatomyViewer
-                          modelPath={selectedSystem.modelPath}
-                          defaultTarget={selectedSystem.organs[0]}
-                          defaultDistance={3}
-                          onSelectNode={(nodeName) => {
-                            console.log('Selected node:', nodeName);
-                          }}
-                          onHoverNode={(nodeName) => {
-                            console.log('Hovered node:', nodeName);
-                          }}
-                          showLabels={showLabels}
-                          hiddenNodes={new Set()}
-                        />
+                        {isClient ? (
+                          <AnatomyViewer
+                            modelPath={selectedSystem.modelPath}
+                            defaultTarget={selectedSystem.organs[0]}
+                            defaultDistance={3}
+                            onSelectNode={(nodeName) => {
+                              console.log('Selected node:', nodeName);
+                            }}
+                            onHoverNode={(nodeName) => {
+                              console.log('Hovered node:', nodeName);
+                            }}
+                            showLabels={showLabels}
+                            hiddenNodes={new Set()}
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            <div className="text-center">
+                              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                              <p className="text-muted-foreground">Loading 3D viewer...</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="p-8 text-center">
