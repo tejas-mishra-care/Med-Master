@@ -97,6 +97,14 @@ const removeLabel = async (labelId: string): Promise<void> => {
 };
 
 export default function AnatomyPage() {
+  return (
+    <React.Suspense fallback={<div className="flex items-center justify-center h-screen"><div className="text-lg">Loading...</div></div>}>
+      <AnatomyPageContent />
+    </React.Suspense>
+  );
+}
+
+function AnatomyPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
