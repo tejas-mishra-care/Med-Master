@@ -1,0 +1,106 @@
+/* Anatomy Module Styles */
+
+.anatomy-viewer {
+  @apply relative w-full h-full;
+}
+
+.anatomy-viewer canvas {
+  @apply w-full h-full;
+}
+
+.anatomy-sidebar {
+  @apply w-80 h-full bg-background border-r border-border flex flex-col;
+}
+
+.anatomy-labels-panel {
+  @apply w-80 h-full bg-background border-l border-border flex flex-col;
+}
+
+.anatomy-system-item {
+  @apply w-full justify-start h-auto p-3 transition-colors;
+}
+
+.anatomy-system-item:hover {
+  @apply bg-muted;
+}
+
+.anatomy-system-item.active {
+  @apply bg-primary text-primary-foreground;
+}
+
+.anatomy-color-indicator {
+  @apply w-4 h-4 rounded-full;
+}
+
+.anatomy-label-card {
+  @apply border border-dashed bg-muted/20;
+}
+
+.anatomy-pinned-label {
+  @apply border bg-card;
+}
+
+.anatomy-loading {
+  @apply flex items-center justify-center w-full h-full;
+}
+
+.anatomy-error {
+  @apply flex items-center justify-center w-full h-full text-destructive;
+}
+
+.anatomy-debug-panel {
+  @apply fixed bottom-4 right-4 w-64 max-h-48 bg-background border rounded-lg shadow-lg overflow-hidden;
+}
+
+.anatomy-debug-content {
+  @apply p-3 text-xs font-mono overflow-y-auto max-h-32;
+}
+
+.anatomy-keyboard-shortcuts {
+  @apply text-xs text-muted-foreground;
+}
+
+.anatomy-attribution {
+  @apply text-xs text-muted-foreground text-center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .anatomy-sidebar,
+  .anatomy-labels-panel {
+    @apply w-64;
+  }
+}
+
+@media (max-width: 768px) {
+  .anatomy-sidebar,
+  .anatomy-labels-panel {
+    @apply w-full h-auto;
+  }
+  
+  .anatomy-viewer {
+    @apply h-96;
+  }
+}
+
+/* Animation classes */
+.anatomy-fade-in {
+  @apply animate-in fade-in duration-200;
+}
+
+.anatomy-slide-in-left {
+  @apply animate-in slide-in-from-left duration-300;
+}
+
+.anatomy-slide-in-right {
+  @apply animate-in slide-in-from-right duration-300;
+}
+
+/* Focus states for accessibility */
+.anatomy-system-item:focus-visible {
+  @apply ring-2 ring-ring ring-offset-2;
+}
+
+.anatomy-button:focus-visible {
+  @apply ring-2 ring-ring ring-offset-2;
+}
