@@ -88,9 +88,9 @@ export default function DashboardLayout({
             </SidebarMenu>
           </SidebarContent>
         </Sidebar>
-        <SidebarInset className="flex-1 overflow-auto scrollbar-modern">
+    <SidebarInset className="flex-1 overflow-auto scrollbar-modern">
           <div className="h-full w-full flex justify-center">
-            <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
               {children}
             </div>
           </div>
