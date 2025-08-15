@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,6 @@ import dynamic from 'next/dynamic';
 const AnatomyViewer = dynamic(() => import('../../../../features/anatomy3d/components/AnatomyViewer'), {
   ssr: false,
   loading: () => <div className="flex items-center justify-center h-full">Loading 3D viewer...</div>,
-  suspense: false,
 });
 import { 
   Brain, 

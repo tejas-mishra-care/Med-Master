@@ -1,5 +1,8 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+// MeshoptDecoder has no bundled TS types; import with type any to satisfy TS
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// @ts-ignore
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { SRGBColorSpace } from 'three';
 
@@ -30,7 +33,13 @@ export const loadGLTF = async (url: string, useCache = true): Promise<LoadedMode
   }
 
   try {
-    const gltf = await gltfLoader.loadAsync(url);
+    const safeUrl = encodeURI(url);
+    // Debug: log the final URL used for loading
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[loadGLTF] Loading', safeUrl);
+    }
+    const gltf = await gltfLoader.loadAsync(safeUrl);
     
     // Fix color space for newer Three.js versions
     gltf.scene.traverse((child: any) => {
