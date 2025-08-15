@@ -149,7 +149,7 @@ export default function NotesPage() {
   };
 
   return (
-    <div className="container mx-auto p-6">
+  <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <FileText className="w-8 h-8" />

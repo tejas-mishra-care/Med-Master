@@ -128,7 +128,7 @@ export default function SrsPage() {
 
   if (reviewMode && currentCard) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+  <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <BrainCircuit className="w-8 h-8" />
@@ -200,7 +200,7 @@ export default function SrsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+  <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <BrainCircuit className="w-8 h-8" />

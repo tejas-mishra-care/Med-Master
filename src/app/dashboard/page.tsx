@@ -178,7 +178,7 @@ const getActivityColor = (type: string) => {
 export default function DashboardPage() {
   return (
     <div className="min-h-screen w-full bg-background gradient-bg dark:gradient-bg-dark">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Welcome Section */}
         <div className="text-center space-y-4 pt-4">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-headline bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">

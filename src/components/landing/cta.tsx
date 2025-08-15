@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Cta() {
   return (
     <section className="py-12 sm:py-24 bg-secondary">
-      <div className="container mx-auto px-4 text-center">
+  <div className="max-w-7xl mx-auto px-4 text-center">
         <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">
           Ready to Revolutionize Your Medical Studies?
         </h2>
