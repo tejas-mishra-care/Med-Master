@@ -1,0 +1,50 @@
+[
+  {
+    "id": "angiology",
+    "name": "Angiology",
+    "path": "/models/3D anatomy/angiology.glb",
+    "color": "#6fb1ff",
+    "defaultTarget": "Heart",
+    "defaults": { "distance": 2.8 }
+  },
+  {
+    "id": "neurology",
+    "name": "Neurology",
+    "path": "/models/3D anatomy/neurology.glb",
+    "color": "#ffb86b",
+    "defaultTarget": "Brain",
+    "defaults": { "distance": 2.6 }
+  },
+  {
+    "id": "myology",
+    "name": "Myology",
+    "path": "/models/3D anatomy/myology.glb",
+    "color": "#ff7676",
+    "defaultTarget": "Masseter",
+    "defaults": { "distance": 3.0 }
+  },
+  {
+    "id": "arthrology",
+    "name": "Arthrology",
+    "path": "/models/3D anatomy/arthrology.glb",
+    "color": "#f7e36e",
+    "defaultTarget": "Knee",
+    "defaults": { "distance": 3.2 }
+  },
+  {
+    "id": "splanchnology",
+    "name": "Splanchnology",
+    "path": "/models/3D anatomy/splanchnology.glb",
+    "color": "#9be49b",
+    "defaultTarget": "Liver",
+    "defaults": { "distance": 3.0 }
+  },
+  {
+    "id": "muscular_insertions",
+    "name": "Muscular Insertions",
+    "path": "/models/3D anatomy/muscular_insertions.glb",
+    "color": "#c39bff",
+    "defaultTarget": "Humerus",
+    "defaults": { "distance": 3.1 }
+  }
+]

@@ -114,6 +114,7 @@ export default function AnatomyPage() {
       try {
         const response = await fetch('/features/anatomy3d/data/anatomyManifest.json');
         const manifest = await response.json();
+        console.log('Loaded manifest:', manifest);
         setSystems(manifest);
         setLoading(false);
       } catch (error) {
@@ -186,6 +187,8 @@ export default function AnatomyPage() {
     );
   }
 
+  console.log('Rendering with systems:', systems);
+  
   return (
     <div className="flex h-screen bg-background">
       {/* Left Sidebar */}
