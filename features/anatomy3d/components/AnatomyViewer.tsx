@@ -1,9 +1,8 @@
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Bounds, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, Bounds, Html } from '@react-three/drei';
 import { Vector3, Box3, Object3D } from 'three';
 import { loadGLTF } from '../../../lib/three/loaders';
-import { useAnatomyScene } from '../hooks/useAnatomyScene';
 
 interface AnatomyViewerProps {
   modelPath: string;
@@ -36,7 +35,6 @@ const Model: React.FC<ModelProps> = ({
 }) => {
   const { scene, camera } = useThree();
   const modelRef = useRef<Object3D>();
-  const [model, setModel] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,8 +45,6 @@ const Model: React.FC<ModelProps> = ({
 
     loadGLTF(modelPath)
       .then((gltf) => {
-        setModel(gltf);
-        
         // Clear existing scene
         while (scene.children.length > 0) {
           scene.remove(scene.children[0]);
@@ -70,16 +66,6 @@ const Model: React.FC<ModelProps> = ({
         camera.position.set(distance, distance, distance);
         camera.lookAt(center);
 
-        // Set controls target to default target if specified
-        if (defaultTarget) {
-          const targetNode = modelScene.getObjectByName(defaultTarget);
-          if (targetNode) {
-            const targetBox = new Box3().setFromObject(targetNode);
-            const targetCenter = targetBox.getCenter(new Vector3());
-            // You can set the OrbitControls target here if needed
-          }
-        }
-
         setLoading(false);
       })
       .catch((err) => {
@@ -87,43 +73,7 @@ const Model: React.FC<ModelProps> = ({
         setError(err.message);
         setLoading(false);
       });
-  }, [modelPath, scene, camera, defaultTarget, defaultDistance]);
-
-  // Handle node visibility
-  useEffect(() => {
-    if (!modelRef.current) return;
-
-    const traverseAndHide = (object: Object3D) => {
-      if (hiddenNodes.has(object.name)) {
-        object.visible = false;
-      } else {
-        object.visible = true;
-      }
-      object.children.forEach(traverseAndHide);
-    };
-
-    traverseAndHide(modelRef.current);
-  }, [hiddenNodes]);
-
-  // Handle hover effects
-  useFrame(() => {
-    if (!modelRef.current) return;
-
-    const traverseAndHighlight = (object: Object3D) => {
-      if (object.type === 'Mesh') {
-        const mesh = object as any;
-        if (mesh.material) {
-          // Reset material
-          if (mesh.material.emissive) {
-            mesh.material.emissive.setHex(0x000000);
-          }
-        }
-      }
-      object.children.forEach(traverseAndHighlight);
-    };
-
-    traverseAndHighlight(modelRef.current);
-  });
+  }, [modelPath, scene, camera, defaultDistance]);
 
   if (loading) {
     return (
@@ -183,10 +133,6 @@ const AnatomyViewer: React.FC<AnatomyViewerProps> = ({
             enableZoom={true}
             enableRotate={true}
           />
-          
-          <Bounds fit clip observe damping={6} margin={1.2}>
-            {/* Model will be added here */}
-          </Bounds>
         </Suspense>
       </Canvas>
     </div>

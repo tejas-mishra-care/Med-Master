@@ -1,6 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { SRGBColorSpace } from 'three';
 
 // Small cache for loaded models
 const modelCache = new Map<string, any>();
@@ -30,6 +31,18 @@ export const loadGLTF = async (url: string, useCache = true): Promise<LoadedMode
 
   try {
     const gltf = await gltfLoader.loadAsync(url);
+    
+    // Fix color space for newer Three.js versions
+    gltf.scene.traverse((child: any) => {
+      if (child.material) {
+        if (child.material.map) {
+          child.material.map.colorSpace = SRGBColorSpace;
+        }
+        if (child.material.emissiveMap) {
+          child.material.emissiveMap.colorSpace = SRGBColorSpace;
+        }
+      }
+    });
     
     // Cache the loaded model
     if (useCache) {
