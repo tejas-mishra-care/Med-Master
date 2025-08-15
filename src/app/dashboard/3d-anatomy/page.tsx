@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import the 3D viewer to avoid SSR issues
 const AnatomyViewer = dynamic(
-  () => import('../../../features/anatomy3d/components/AnatomyViewer'),
+  () => import('../../../../features/anatomy3d/components/AnatomyViewer'),
   { ssr: false, loading: () => <div className="flex items-center justify-center h-full">Loading 3D viewer...</div> }
 );
 import { 
