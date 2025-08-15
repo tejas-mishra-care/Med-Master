@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from '@/components/custom-navigation-provider';
 import dynamic from 'next/dynamic';
 import AnatomySidebar from '../../../../features/anatomy3d/components/AnatomySidebar';
 import LabelsPanel from '../../../../features/anatomy3d/components/LabelsPanel';

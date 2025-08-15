@@ -4,6 +4,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
+import { CustomNavigationProvider } from '@/components/custom-navigation-provider';
+import '@/lib/next-navigation-patch';
 
 export const metadata: Metadata = {
   title: 'MedMaster AI',
@@ -23,19 +25,21 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('font-body antialiased')}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider defaultOpen={false}>
-            <div className="relative flex min-h-screen flex-col bg-background">
-              {children}
-            </div>
-          </SidebarProvider>
-          <Toaster />
-        </ThemeProvider>
+        <CustomNavigationProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider defaultOpen={false}>
+              <div className="relative flex min-h-screen flex-col bg-background">
+                {children}
+              </div>
+            </SidebarProvider>
+            <Toaster />
+          </ThemeProvider>
+        </CustomNavigationProvider>
       </body>
     </html>
   );
